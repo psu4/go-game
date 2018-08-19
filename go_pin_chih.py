@@ -24,27 +24,13 @@ import re
 import sys, getopt
 print('Python version ' + sys.version)
 
-
-
 print ('Welcome to the Go Game')
 
-sizeboard = int(raw_input('Please select how big the N X N square game board you would like to have. Please enter N as an integer.  If no value is provided, the default value is 9 X 9 ') or "9")
 
-try:
 
-    val = int(sizeboard)
-
-except ValueError:
-
-    print("The input value " + sizeboard + " is not an integer!")
-
-sizeboard = int(sizeboard) # the size of the board
 
 quit_variable = 1 # whether the game will be quit or not
 
-o_list = []
-
-x_list = []
 
 ## start over games. Make go_game a 2 dimension list. For example 4 X 4 like this
 
@@ -209,7 +195,7 @@ def check_move():
         # ox------oxox------ox
 
         #ko_rule_check = "xo------xoxo------xo"
-        # ko_rule_check = "xo------xxxo------xo"
+
 
         ko_rule_search = re.search(r'xo......xoxo......xo', go_1_dimension_string)
 
@@ -234,15 +220,15 @@ def check_move():
 
 def user_input(white_chess):
 
-    global sizeboard
+    global temp
 
     global go_game_general_list
 
     temp = 1
 
-    while temp == 1:
+    while temp == 1 and play_or_test == "p":
 
-        user_input = raw_input('Press y for Place, n for Quit  (y/n)? ')
+        user_input = input('Press y for Place, n for Quit  (y/n)? ')
 
         if user_input == 'n':
 
@@ -258,7 +244,7 @@ def user_input(white_chess):
 
             try:
 
-                x = int(raw_input('x: '))
+                x = int(input('x: '))
 
             except ValueError:
 
@@ -268,7 +254,7 @@ def user_input(white_chess):
 
             try:
 
-                y = int(raw_input('y: '))
+                y = int(input('y: '))
 
             except ValueError:
 
@@ -297,13 +283,31 @@ def user_input(white_chess):
 
             temp = 0
 
-    if white_chess == 'o':
+    if play_or_test == "p":  # play_or_test="p" actual play
 
-        go_game_general_list[y][x] = 'o' # if it is the turn of "o", replace the board game's user input coordinate with "o"
+        if white_chess == 'o':
 
-    else:
+            go_game_general_list[y][x] = 'o' # if it is the turn of "o", replace the board game's user input coordinate with "o"
 
-        go_game_general_list[y][x] = 'x' # if it is the turn of "x", replace the board game's user input coordinate with "x"
+        else:
+
+            go_game_general_list[y][x] = 'x' # if it is the turn of "x", replace the board game's user input coordinate with "x"
+
+    elif play_or_test == "u": # play_or_test="u"  => unit test
+
+        if white_chess == 'o':
+
+            y=int(0)
+            x=int(0)
+
+            go_game_general_list[y][x] = 'o'  # if it is the turn of "o", replace the board game's user input coordinate with "o"
+
+        else:
+
+            y=int(0)
+            x=int(0)
+
+            go_game_general_list[y][x] = 'x'
 
     return [x, y]
 
@@ -336,9 +340,30 @@ def turn():
             temp = 0
 
 
+
 ## This is the main function to start the game, which call a bunch of functions above
 
 def main():
+
+    global sizeboard
+
+    sizeboard = int(input(
+        'Please select how big the N X N square game board you would like to have. Please enter N as an integer.  If no value is provided, the default value is 9 X 9 ') or "9")
+
+    try:
+
+        val = int(sizeboard)
+
+    except ValueError:
+
+        print("The input value " + sizeboard + " is not an integer!")
+
+    sizeboard = int(sizeboard)  # the size of the board
+
+    o_list = []
+
+    x_list = []
+
 
     global go_2_dimension_list
 
@@ -430,12 +455,126 @@ def main():
 
 ## call the main function to run the game.  The game will only stop if the users choose to exit by input "n", which makes quit_variable == 0
 
-if quit_variable == 1:
+## if the user inputs "p" here, the game will start.  If "u" here, the unit tests will start.
 
-    main()
+play_or_test= input('Press p for Play. Press u for Unit tests: ' or 'p')
 
-    temp = 1
+if play_or_test == 'p':
 
-elif quit_variable == 0:
+    if quit_variable == 1:
 
-    exit()
+        main()
+
+        temp = 1
+
+    elif quit_variable == 0:
+
+        exit()
+
+elif play_or_test == 'u':
+
+#### definte the unit test functions #####
+
+    def unit_test(input,output,function_name):
+
+        if input != output:
+
+            print (str(function_name)+" function unit test failed")
+
+        elif input == output:
+
+            print (str(function_name)+" function unit test passed")
+
+    ## unit test 1 on the beginning function
+
+    sizeboard = int(2)
+
+    beginning_output = beginning()
+
+    expected_beginning_output = [['-', '-'], ['-', '-']]
+
+    unit_test(beginning_output,expected_beginning_output,"Unit test 1: beginning")
+
+    ## unit test 2 on the check_state function
+
+    check_state_output = check_state([['-', '-'], ['-', '-']])
+
+    expected_check_state_output = "----"
+
+    unit_test(check_state_output, expected_check_state_output, "Unit test 2: checkstate")
+
+    ## unit test 3 on the check_move() function-1: check move
+
+    go_1_dimension_string = 'o---'
+
+    go_game_general_list = [['o', '-'], ['-', '-']]
+
+    expected_output = int(0)
+
+    unit_test(check_move(), expected_output, "Unit test 3-1: checkstate part 1 move violation: the same being occupied more than once ")
+
+    ## unit test 4 on the check_move() function-2: check move
+
+    go_1_dimension_string = 'o----'
+
+    go_game_general_list = [['o', '-'], ['-', '-']]
+
+    expected_output = int(1)
+
+    unit_test(check_move(), expected_output, "Unit test 3-2: checkstate part 2")
+
+    print ("Unit test 3-3 on the checkstate() function's ko-rule violation test, please see the pseudo codes ")
+
+    ## unit test 5 on the check_move() function-3: check ko-rule {pseduoe code}
+
+    # go_1_dimension_string = 'xo------x-xo------xo'
+    #
+    # go_game_general_list = "[[ we need to put the ko rule violation example in a 2-D list here for this unit test case. I don't have time to generate it for now]]"
+    #
+    # expected_output = int(1)
+    #
+    # unit_test(check_move(), expected_output, "Unit test 3-3: checkstate part 2 no violation ")
+
+    ## unit test 6
+
+    temp = 0
+
+    white_chess = 'o'
+
+    go_game_general_list=[['o', '-'], ['-', '-']]
+
+    # go_game_general_list[y][x] = 'o'
+
+    x=(user_input(white_chess))
+
+    expected_output=[0, 0]
+
+    unit_test(x, expected_output, "Unit test 4: user_input")
+
+    ## unit test 7 on the turn() function {pseudo code}
+
+    ## we can add the "play_or_test" variable in the turn function to make the unit test simpler
+
+    ## in turn()
+
+    ## if temp == 1 and play_or_test == p:
+
+    ##  do whatever the current turn() does
+
+    ## elif temp == 1 and play_or_test == u:
+
+    ##  set all the necessary variables and coordinates for a validate move, and to see if the check_move will return 1 (meaning a valid move)
+
+    ## return a string "valid move"
+
+    ## call the unit test function to test
+
+    ## unit_test(turn(), "valid move", "Unit test 7: turn function ")
+
+    ## unit test 8 on the main() function {pseudo code}
+
+    ## we can do the very similar steps for unit test 7 for the main() unit test
+
+    print ("Unit test 5 & 6 on the turn() and main() function, please see the pseudo codes ")
+
+
