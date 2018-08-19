@@ -57,7 +57,7 @@ Press y for Place, n for Quit  (y/n)?
 
 1.i: the game will continue until the whole game board is filled or any user presses "n"
 
-1.j: the game sttate is constantly evaluated and shown during every move:
+1.j: the game state is constantly evaluated and shown during every move:
 
 There are still 80 empty positions left.
 The o occupied 1 positions
@@ -129,12 +129,12 @@ More details are available in the comments inside the code
 
 4.a: there is no life and death scenario considered.  This can be done by potentially adding a few more functions which can be called by the main() function.
 
-4.b: the ko rule violation check only works for the 9X9 game board. We can extend the regular expression check in the check_move() function to make the ko rule check works for different sizes of the game board.
+4.b: the ko rule violation checks only works for the 9X9 game board. We can extend the regular expression checks in the check_move() function to make the ko rule check works for different sizes of the game board.
 
 4.c: the unit tests can be improved with coverages on mocking user inputs, and testing more extensively in different user options.
 
 4.d: the go game should only be ended if both users quit instead of the current state, where just an user quitting ends the game.
 
-4.e: More command line options should be provided such as player names.  Training game board images with convolutional neural networks potentially can build a AI opponent again a human player.
+4.e: More command line options should be provided such as player names.  Training game board images with convolutional neural networks potentially can build an AI opponent again a human player.
 
 
